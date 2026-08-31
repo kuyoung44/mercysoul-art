@@ -1,66 +1,28 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MercySoul Art — Talisman Generator</title>
-  <style>
-    :root { color-scheme: dark; font-family: Inter, system-ui, sans-serif; }
-    * { box-sizing: border-box; }
-    body { margin:0; min-height:100vh; display:grid; place-items:center; background:radial-gradient(circle at top,#2b1c0d,#090706 60%); color:#f8ecd8; padding:24px; }
-    main { width:min(760px,100%); text-align:center; }
-    .mark { font-size:14px; letter-spacing:.28em; text-transform:uppercase; opacity:.7; }
-    h1 { font-size:clamp(38px,8vw,72px); margin:12px 0 8px; }
-    .lead { color:#cdbda7; margin:0 auto 28px; max-width:600px; line-height:1.6; }
-    .panel { background:rgba(255,255,255,.055); border:1px solid rgba(255,214,145,.18); border-radius:24px; padding:20px; backdrop-filter:blur(12px); box-shadow:0 20px 80px rgba(0,0,0,.35); }
-    textarea { width:100%; min-height:120px; resize:vertical; border:1px solid #5f4a32; border-radius:16px; padding:16px; background:#120e0a; color:#fff7e8; font:inherit; outline:none; }
-    textarea:focus { border-color:#d5a95d; }
-    button { width:100%; margin-top:14px; padding:15px 20px; border:0; border-radius:14px; background:#d5a95d; color:#160f08; font-weight:800; font-size:16px; cursor:pointer; }
-    button:disabled { opacity:.55; cursor:wait; }
-    #status { min-height:24px; margin:16px 0; color:#d9c5a4; }
-    #result img { width:100%; max-height:680px; object-fit:contain; border-radius:18px; display:block; margin-top:14px; }
-    .hint { font-size:13px; color:#9e907f; margin-top:18px; }
-  </style>
-</head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MercySoul Art — Vision to Art Studio</title>
+<style>
+:root{font-family:Inter,system-ui,sans-serif;color:#f8ecd8;background:#080706}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 50% -10%,#3b2815,#080706 55%);line-height:1.6}.wrap{width:min(1120px,92%);margin:auto}.nav{display:flex;justify-content:space-between;align-items:center;padding:22px 0;position:sticky;top:0;background:rgba(8,7,6,.82);backdrop-filter:blur(14px);z-index:3}.brand{font-weight:900;letter-spacing:.12em}.nav a{color:#d9c5a4;text-decoration:none;margin-left:18px;font-size:14px}.hero{text-align:center;padding:100px 0 80px}.eyebrow{letter-spacing:.3em;text-transform:uppercase;color:#caa86b;font-size:12px}.hero h1{font-size:clamp(48px,9vw,92px);line-height:.98;margin:18px 0}.hero p{max-width:680px;margin:0 auto 30px;color:#cdbda7;font-size:18px}.cta{display:inline-block;padding:14px 22px;border-radius:999px;background:#d5a95d;color:#160f08;text-decoration:none;font-weight:800}.section{padding:75px 0}.section h2{font-size:38px;margin:0 0 10px}.muted{color:#a99b89}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{border:1px solid rgba(255,214,145,.16);background:rgba(255,255,255,.045);border-radius:22px;overflow:hidden}.art{aspect-ratio:1/1;background:radial-gradient(circle,#b88a45,#24170b 45%,#0b0907);display:grid;place-items:center;font-size:54px}.card div:last-child{padding:18px}.card h3{margin:0 0 5px}.studio{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}.panel{padding:22px;border-radius:24px;background:rgba(255,255,255,.05);border:1px solid rgba(255,214,145,.16)}textarea{width:100%;min-height:150px;background:#100d09;color:#fff7e8;border:1px solid #604a2f;border-radius:15px;padding:16px;font:inherit;resize:vertical}button{width:100%;margin-top:12px;border:0;border-radius:14px;padding:15px;background:#d5a95d;color:#160f08;font-weight:900;font-size:16px;cursor:pointer}button:disabled{opacity:.6;cursor:wait}#status{min-height:25px;margin:14px 0;color:#d9c5a4}#result img{width:100%;border-radius:18px}.contact{display:flex;gap:12px;flex-wrap:wrap}.contact a{display:inline-block;padding:13px 18px;border:1px solid #6c5435;border-radius:12px;color:#f5e4c7;text-decoration:none}.price{font-size:22px;color:#d5a95d;font-weight:800}.footer{padding:35px 0;border-top:1px solid #2b2117;color:#8e8272;font-size:13px}@media(max-width:760px){.grid,.studio{grid-template-columns:1fr}.nav-links{display:none}.hero{padding-top:70px}}
+</style></head>
 <body>
-  <main>
-    <div class="mark">MercySoul Dominion</div>
-    <h1>MercySoul Art</h1>
-    <p class="lead">Turn a vision into a symbolic digital talisman. Describe what you want to see, then let the image engine give your idea form.</p>
-    <section class="panel">
-      <textarea id="vision" maxlength="2000" placeholder="A golden shield for my family"></textarea>
-      <button id="generate">Generate Talisman</button>
-      <div id="status" role="status"></div>
-      <div id="result"></div>
-      <div class="hint">Describe the subject, symbols, atmosphere, colors, and feeling you want.</div>
-    </section>
-  </main>
-  <script>
-    const vision = document.getElementById('vision');
-    const button = document.getElementById('generate');
-    const status = document.getElementById('status');
-    const result = document.getElementById('result');
-
-    button.addEventListener('click', async () => {
-      const prompt = vision.value.trim();
-      if (!prompt) { status.textContent = 'Describe your vision first.'; vision.focus(); return; }
-      button.disabled = true;
-      status.textContent = 'Creating your talisman…';
-      result.innerHTML = '';
-      try {
-        const response = await fetch('/api/generate', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ vision: prompt }) });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || 'Generation failed.');
-        if (!data.image) throw new Error('No image was returned.');
-        const img = document.createElement('img');
-        img.src = data.image;
-        img.alt = 'Generated MercySoul talisman';
-        result.appendChild(img);
-        status.textContent = 'Your talisman has been created. Aṣẹ.';
-      } catch (error) {
-        status.textContent = error.message || 'Something went wrong.';
-      } finally { button.disabled = false; }
-    });
-  </script>
-</body>
-</html>
+<div class="wrap">
+<nav class="nav"><div class="brand">MERCYSOUL ART</div><div class="nav-links"><a href="#portfolio">Portfolio</a><a href="#vision">Vision → Art</a><a href="#custom">Custom Art</a><a href="#contact">Contact</a></div></nav>
+<header class="hero"><div class="eyebrow">MercySoul Dominion</div><h1>Vision to Art.</h1><p>A digital art studio where imagination becomes symbolic visual expression — from original MercySoul works to personalized talismans and commissions.</p><a class="cta" href="#vision">Create Your Vision</a></header>
+<section class="section" id="portfolio"><div class="eyebrow">01 — Portfolio</div><h2>Selected MercySoul Works</h2><p class="muted">A growing collection of original visual language, symbolism and light.</p><div class="grid">
+<article class="card"><div class="art">✦</div><div><h3>Ogbe Light</h3><p class="muted">Luminous geometry and ancestral-inspired symbolism.</p></div></article>
+<article class="card"><div class="art">◈</div><div><h3>Golden Dominion</h3><p class="muted">Regal forms created around protection, strength and presence.</p></div></article>
+<article class="card"><div class="art">☼</div><div><h3>Sacred Horizon</h3><p class="muted">Atmospheric digital art built around light and possibility.</p></div></article>
+</div></section>
+<section class="section" id="vision"><div class="eyebrow">02 — Vision → Art</div><h2>Describe what you see.</h2><p class="muted">Enter an idea and generate a symbolic digital talisman from it.</p><div class="studio"><div class="panel"><textarea id="visionInput" maxlength="2000" placeholder="A golden shield for my family, surrounded by radiant light..."></textarea><button id="generate">Generate Talisman</button><div id="status"></div></div><div class="panel"><div id="result"><p class="muted">Your generated artwork will appear here.</p></div></div></div></section>
+<section class="section" id="custom"><div class="eyebrow">03 — Custom Art</div><h2>Your idea. Your artwork.</h2><p class="muted">Commission a personalized MercySoul artwork for a wallpaper, portrait, symbolic piece, social artwork, gift or creative concept.</p><div class="grid"><article class="card"><div><h3>Digital Talisman</h3><p class="price">₦5,000</p><p class="muted">A personalized symbolic artwork created from your vision.</p></div></article><article class="card"><div><h3>Custom Vision Art</h3><p class="price">Request a quote</p><p class="muted">More detailed scenes, portraits, fantasy concepts and premium compositions.</p></div></article><article class="card"><div><h3>Business AI</h3><p class="price">₦50,000</p><p class="muted">Custom AI chatbot systems for businesses.</p></div></article></div></section>
+<section class="section" id="gallery"><div class="eyebrow">04 — Gallery</div><h2>Collections</h2><p class="muted">Explore the evolving MercySoul visual archive: Light Series, Dominion, Vision Art and commissioned works.</p></section>
+<section class="section" id="contact"><div class="eyebrow">05 — Order / Contact</div><h2>Bring your vision forward.</h2><p class="muted">For commissions, personalized artwork or business AI systems, contact the Founder directly.</p><div class="contact"><a href="https://wa.me/2340000000000">WhatsApp</a><a href="https://www.facebook.com/">Facebook</a></div></section>
+<footer class="footer">© 2026 MercySoul Art · MercySoul Dominion · Aṣẹ.</footer>
+</div>
+<script>
+const input=document.getElementById('visionInput'),button=document.getElementById('generate'),status=document.getElementById('status'),result=document.getElementById('result');
+button.onclick=async()=>{const vision=input.value.trim();if(!vision){status.textContent='Describe your vision first.';return}button.disabled=true;status.textContent='Creating your artwork…';result.innerHTML='';try{const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({vision})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Generation failed.');const img=document.createElement('img');img.src=d.image;img.alt='Generated MercySoul artwork';result.appendChild(img);status.textContent='Artwork created. Aṣẹ.'}catch(e){status.textContent=e.message||'Something went wrong.'}finally{button.disabled=false}};
+</script>
+</body></html>
