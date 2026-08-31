@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MercySoul Art — Talisman Generator</title>
+  <style>
+    :root { color-scheme: dark; font-family: Inter, system-ui, sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; display:grid; place-items:center; background:radial-gradient(circle at top,#2b1c0d,#090706 60%); color:#f8ecd8; padding:24px; }
+    main { width:min(760px,100%); text-align:center; }
+    .mark { font-size:14px; letter-spacing:.28em; text-transform:uppercase; opacity:.7; }
+    h1 { font-size:clamp(38px,8vw,72px); margin:12px 0 8px; }
+    .lead { color:#cdbda7; margin:0 auto 28px; max-width:600px; line-height:1.6; }
+    .panel { background:rgba(255,255,255,.055); border:1px solid rgba(255,214,145,.18); border-radius:24px; padding:20px; backdrop-filter:blur(12px); box-shadow:0 20px 80px rgba(0,0,0,.35); }
+    textarea { width:100%; min-height:120px; resize:vertical; border:1px solid #5f4a32; border-radius:16px; padding:16px; background:#120e0a; color:#fff7e8; font:inherit; outline:none; }
+    textarea:focus { border-color:#d5a95d; }
+    button { width:100%; margin-top:14px; padding:15px 20px; border:0; border-radius:14px; background:#d5a95d; color:#160f08; font-weight:800; font-size:16px; cursor:pointer; }
+    button:disabled { opacity:.55; cursor:wait; }
+    #status { min-height:24px; margin:16px 0; color:#d9c5a4; }
+    #result img { width:100%; max-height:680px; object-fit:contain; border-radius:18px; display:block; margin-top:14px; }
+    .hint { font-size:13px; color:#9e907f; margin-top:18px; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="mark">MercySoul Dominion</div>
+    <h1>MercySoul Art</h1>
+    <p class="lead">Turn a vision into a symbolic digital talisman. Describe what you want to see, then let the image engine give your idea form.</p>
+    <section class="panel">
+      <textarea id="vision" maxlength="2000" placeholder="A golden shield for my family"></textarea>
+      <button id="generate">Generate Talisman</button>
+      <div id="status" role="status"></div>
+      <div id="result"></div>
+      <div class="hint">Describe the subject, symbols, atmosphere, colors, and feeling you want.</div>
+    </section>
+  </main>
+  <script>
+    const vision = document.getElementById('vision');
+    const button = document.getElementById('generate');
+    const status = document.getElementById('status');
+    const result = document.getElementById('result');
+
+    button.addEventListener('click', async () => {
+      const prompt = vision.value.trim();
+      if (!prompt) { status.textContent = 'Describe your vision first.'; vision.focus(); return; }
+      button.disabled = true;
+      status.textContent = 'Creating your talisman…';
+      result.innerHTML = '';
+      try {
+        const response = await fetch('/api/generate', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ vision: prompt }) });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Generation failed.');
+        if (!data.image) throw new Error('No image was returned.');
+        const img = document.createElement('img');
+        img.src = data.image;
+        img.alt = 'Generated MercySoul talisman';
+        result.appendChild(img);
+        status.textContent = 'Your talisman has been created. Aṣẹ.';
+      } catch (error) {
+        status.textContent = error.message || 'Something went wrong.';
+      } finally { button.disabled = false; }
+    });
+  </script>
+</body>
+</html>
