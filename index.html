@@ -25,4 +25,19 @@
 const input=document.getElementById('visionInput'),button=document.getElementById('generate'),status=document.getElementById('status'),result=document.getElementById('result');
 button.onclick=async()=>{const vision=input.value.trim();if(!vision){status.textContent='Describe your vision first.';return}button.disabled=true;status.textContent='Creating your artwork…';result.innerHTML='';try{const r=await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({vision})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Generation failed.');const img=document.createElement('img');img.src=d.image;img.alt='Generated MercySoul artwork';result.appendChild(img);status.textContent='Artwork created. Aṣẹ.'}catch(e){status.textContent=e.message||'Something went wrong.'}finally{button.disabled=false}};
 </script>
+<style id="mercysoul-vision-ad-style">
+.mercysoul-vision-ad{position:fixed;left:0;right:0;bottom:0;z-index:2147483000;background:linear-gradient(90deg,#090611,#24104a,#090611);border-top:1px solid #d4af37;box-shadow:0 -6px 24px rgba(0,0,0,.35);overflow:hidden;height:38px;font:700 12px/38px system-ui,sans-serif}
+.mercysoul-vision-ad-track{display:inline-flex;white-space:nowrap;animation:mercysoulVisionAd 24s linear infinite}
+.mercysoul-vision-ad a{color:#f2d98a;text-decoration:none;padding-right:70px}
+.mercysoul-vision-ad strong{color:#fff}
+@keyframes mercysoulVisionAd{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.mercysoul-vision-ad-track{animation:none}}
+body{padding-bottom:38px!important}
+</style>
+<div class="mercysoul-vision-ad" role="region" aria-label="MercySoul Vision Brain advertisement">
+  <div class="mercysoul-vision-ad-track">
+    <a href="https://mercy-vision.vercel.app/" target="_blank" rel="noopener noreferrer">☥ <strong>MercySoul Vision Brain</strong> · Where Imagination Becomes Sacred Art · Create your custom AI vision → Visit Vision Brain</a>
+    <a href="https://mercy-vision.vercel.app/" target="_blank" rel="noopener noreferrer">☥ <strong>MercySoul Vision Brain</strong> · Where Imagination Becomes Sacred Art · Create your custom AI vision → Visit Vision Brain</a>
+  </div>
+</div>
 </body></html>
